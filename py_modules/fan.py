@@ -37,6 +37,7 @@ class FanConfig:
         self.ram_reg_data = None  # 风扇ecRam寄存器数据
         self.ram_manual_offset = None  # 风扇自动控制ecRam地址
         self.ram_pwm_write_offset = None  # 风扇写入转速ecRam地址
+        self.ram_pwm_write_offset_2 = None  # 风扇写入转速ecRam地址
         self.ram_pwm_read_offset = None  # 风扇读取转速ecRam地址
         self.ram_pwm_read_length = 0  # 风扇实际转速值长度 0为需要通过计算获得转速
 
@@ -261,6 +262,12 @@ class FanManager:
                 fc.ram_pwm_write_offset = (
                     ec_info["ram_rpmwrite_offset"]
                     if "ram_rpmwrite_offset" in ec_info
+                    else None
+                )
+                # 风扇写入转速ecRam地址
+                fc.ram_pwm_write_offset_2 = (
+                    ec_info["ram_rpmwrite_offset_2"]
+                    if "ram_rpmwrite_offset_2" in ec_info
                     else None
                 )
                 # 风扇读取转速ecRam地址
@@ -807,13 +814,13 @@ class FanManager:
         try:
             addr = fc.ram_reg_addr
             data = fc.ram_reg_data
-            offset = fc.ram_pwm_write_offset
             rpm_write_max = fc.pwm_write_max
-
             fanWriteValue = max(min(int(value / 100 * rpm_write_max), rpm_write_max), 0)
-            EC.RamWrite(addr, data, offset, fanWriteValue)
+            EC.RamWrite(addr, data, fc.ram_pwm_write_offset, fanWriteValue)
+            if fc.ram_pwm_write_offset_2:
+                EC.RamWrite(addr, data, fc.ram_pwm_write_offset_2, fanWriteValue)
             logger.info(
-                f"写入ECRAM数据 写入EC地址:{hex(offset)} 风扇转速百分比{value} 风扇最大值{rpm_write_max} 风扇转速写入值:{fanWriteValue}"
+                f"写入ECRAM数据 写入EC地址:{hex(fc.ram_pwm_write_offset)} 风扇转速百分比{value} 风扇最大值{rpm_write_max} 风扇转速写入值:{fanWriteValue}"
             )
             return True
         except Exception:
