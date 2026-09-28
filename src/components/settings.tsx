@@ -3,15 +3,10 @@ import {
   PanelSectionRow,
   ToggleField,
   Marquee,
-  DialogButton,
   Focusable,
   quickAccessMenuClasses,
-  ModalRoot,
-  showModal,
-  ScrollPanelGroup,
   ButtonItem,
 } from "@decky/ui";
-import MarkDownIt from "markdown-it";
 import { useEffect, useState, FC } from "react";
 import { RiArrowDownSFill, RiArrowUpSFill } from "react-icons/ri";
 import {
@@ -23,11 +18,8 @@ import {
   UpdateType,
   ACStateManager,
   EACState,
-  Logger,
 } from "../util";
-import { getPowerInfo } from "../util/backend";
 import { localizeStrEnum, localizationManager } from "../i18n";
-import { FaExclamationCircle } from "react-icons/fa";
 
 const SettingsEnableComponent: FC = () => {
   const [enable, setEnable] = useState<boolean>(Settings.ensureEnable());
@@ -302,16 +294,6 @@ export const SettingsComponent: FC<{
   );
 };
 
-const buttonStyle = {
-  height: "28px",
-  width: "40px",
-  minWidth: 0,
-  padding: 0,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-};
-
 export const QuickAccessTitleView: FC<{ title: string }> = ({ title }) => {
   return (
     // @ts-ignore
@@ -325,101 +307,6 @@ export const QuickAccessTitleView: FC<{ title: string }> = ({ title }) => {
       className={quickAccessMenuClasses.Title}
     >
       <div style={{ marginRight: "auto" }}>{title}</div>
-      <DialogButton
-        onOKActionDescription="Power Info"
-        style={buttonStyle}
-        onClick={() => {
-          showModal(<PowerInfoModel />);
-        }}
-      >
-        <FaExclamationCircle size="0.9em" />
-      </DialogButton>
     </Focusable>
-  );
-};
-
-export const PowerInfoModel: FC = ({
-  closeModal,
-}: {
-  closeModal?: () => void;
-}) => {
-  const fontStyle: React.CSSProperties = {
-    fontFamily:
-      "'DejaVu Sans Mono', Hack, 'Source Code Pro', 'Courier New', monospace, Consolas",
-    fontSize: "12px",
-    lineHeight: "0.2", // 调整行距
-    maxHeight: "300px", // 设置最大高度
-    overflow: "auto", // 添加滚动条
-    whiteSpace: "pre",
-    margin: "10px 0",
-  };
-
-  // @ts-ignore
-  const mdIt = new MarkDownIt({
-    html: true,
-  });
-
-  const [info, setInfo] = useState<string>("");
-  Logger.info(`fn:invoke PowerInfoModel: ${info}`);
-
-  const fetchPowerInfo = () => {
-    // if amd
-    // if (Backend.data.getCpuVendor() === "AuthenticAMD") {
-    //   Logger.info(`fn:invoke getRyzenadjInfo`);
-    //   Backend.getRyzenadjInfo().then((info) => {
-    //     setInfo(info);
-    //   });
-    // } else {
-    //   Logger.info(`fn:invoke getRAPLInfo`);
-    //   Backend.getRAPLInfo().then((info) => {
-    //     setInfo(info);
-    //   });
-    // }
-    Logger.info(`fn:invoke getPowerInfo`);
-    getPowerInfo().then((info: string) => {
-      setInfo(info);
-    });
-  };
-
-  useEffect(() => {
-    fetchPowerInfo();
-
-    // 每5秒刷新一次
-    const interval = setInterval(() => {
-      fetchPowerInfo();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <ModalRoot closeModal={closeModal}>
-      <div>
-        <PanelSection title={"Power Info"}>
-          <PanelSectionRow>
-            <DialogButton
-              onClick={() => {
-                getPowerInfo();
-              }}
-            >
-              Reload
-            </DialogButton>
-          </PanelSectionRow>
-          <ScrollPanelGroup
-            //@ts-ignore
-            focusable={false}
-          >
-            <Focusable
-              children={
-                <div style={fontStyle}>
-                  {info.split("\n").map((line, index) => (
-                    <p key={index}>{line}</p>
-                  ))}
-                </div>
-              }
-            ></Focusable>
-          </ScrollPanelGroup>
-        </PanelSection>
-      </div>
-    </ModalRoot>
   );
 };

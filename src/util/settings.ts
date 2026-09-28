@@ -5,7 +5,6 @@ import {
 } from "typescript-json-serializer";
 import { APPLYTYPE, ComponentName, FANMODE, GPUMODE, UpdateType } from "./enum";
 import { Backend } from "./backend";
-import { setCpuFreqByCoreType } from "./backend";
 import { FanPosition } from "./position";
 import {
   ACStateManager,
@@ -66,36 +65,23 @@ export class AppSetting {
 
   constructor() {
     this.smt = true;
-    this.cpuNum = Backend.data?.hasCpuMaxNum()
-      ? Backend.data?.getCpuMaxNum()
-      : 4;
+    this.cpuNum = 4;
     this.cpuboost = true;
     this.tdpEnable = false;
-    this.tdp = Backend.data?.hasTdpMax()
-      ? Math.trunc(Backend.data?.getTdpMax() / 2)
-      : 15;
+    this.tdp = 15;
     this.gpuMode = GPUMODE.NATIVE;
     this.gpuSliderFix = false;
-    //this.gpuFreq=Backend.data?.hasGpuMax()?Backend.data.getGpuMax():1600;
-    this.gpuAutoMaxFreq = Backend.data?.hasGpuMax()
-      ? Backend.data.getGpuMax()
-      : 1600;
-    this.gpuAutoMinFreq = Backend.data?.hasGpuMin()
-      ? Backend.data.getGpuMin()
-      : 200;
-    this.gpuRangeMaxFreq = Backend.data?.hasGpuMax()
-      ? Backend.data.getGpuMax()
-      : 1600;
-    this.gpuRangeMinFreq = Backend.data?.hasGpuMin()
-      ? Backend.data.getGpuMin()
-      : 200;
+    this.gpuAutoMaxFreq = 1600;
+    this.gpuAutoMinFreq = 200;
+    this.gpuRangeMaxFreq = 1600;
+    this.gpuRangeMinFreq = 200;
     this.fanProfileNameList = [];
     this.cpuMaxPerfPct = 100;
-    this.autoCPUMaxPct = false; // 默认关闭自动CPU最大性能百分比
+    this.autoCPUMaxPct = false;
     this.cpuGovernor = "";
     this.epp = "";
-    this.cpuFreqControlEnable = false; // 默认关闭CPU频率控制
-    this.cpuCoreFreqConfig = {}; // 默认空的核心频率配置
+    this.cpuFreqControlEnable = false;
+    this.cpuCoreFreqConfig = {};
     this.schedExtScheduler = "";
   }
   deepCopy(copyTarget: AppSetting) {
@@ -228,7 +214,7 @@ export class SettingsData {
   public showPowerMenu: boolean = true;
 
   @JsonProperty()
-  public currentTabRoute: string = "cpu";
+  public currentTabRoute: string = "fans";
 
   @JsonProperty()
   public useOldUI: boolean = true; // 是否使用旧的 UI
@@ -535,7 +521,7 @@ export class Settings {
   }
 
   static appIsSupportSMT(): boolean {
-    return Backend.data?.hasSupportsSMT() ? Backend.data?.getSupportsSMT() : true;
+    return false;
   }
 
   static appBypassCharge(): boolean {
@@ -715,7 +701,7 @@ export class Settings {
     if (this._instance.data.enableCustomTDPRange) {
       return this._instance.data.customTDPRangeMax;
     } else {
-      return Backend.data.getTdpMax();
+      return DEFAULT_TDP_MAX;
     }
   }
 
@@ -1074,11 +1060,7 @@ export class Settings {
   }
 
   static appCPUGovernor(): string {
-    return (
-      Settings.ensureApp().cpuGovernor ||
-      Backend.data.getCurrentGovernor() ||
-      "powersave"
-    );
+    return Settings.ensureApp().cpuGovernor || "powersave";
   }
 
   static setCPUGovernor(governor: string) {
@@ -1112,11 +1094,7 @@ export class Settings {
 
   // 获取当前 SCX 调度器
   static appSchedExtScheduler(): string {
-    return (
-      Settings.ensureApp().schedExtScheduler ||
-      Backend.data.getCurrentSchedExtScheduler() ||
-      "none"
-    );
+    return Settings.ensureApp().schedExtScheduler || "none";
   }
 
   // 设置 SCX 调度器
@@ -1151,11 +1129,7 @@ export class Settings {
 
   // 获取当前 EPP 模式
   public static appEPPMode(): string {
-    return (
-      this.ensureApp().epp ||
-      Backend.data.getCurrentEpp() ||
-      "balance-performance"
-    );
+    return this.ensureApp().epp || "balance-performance";
   }
 
   // 设置 EPP 模式
@@ -1202,10 +1176,7 @@ export class Settings {
     app.cpuCoreFreqConfig[coreType] = freq;
     this.saveSettings();
 
-    // 只有开关打开时才应用设置
-    if (app.cpuFreqControlEnable) {
-      setCpuFreqByCoreType({ [coreType]: freq });
-    }
+
     PluginManager.updateComponent(
       ComponentName.CPU_FREQ_CONTROL,
       UpdateType.UPDATE

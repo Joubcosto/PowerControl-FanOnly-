@@ -6,8 +6,7 @@ import decky
 
 import update
 from conf_manager import confManager
-from cpu import cpuManager
-from config import CPU_VENDOR, logger
+from config import logger
 from fan import fanManager
 from sysInfo import sysInfoManager
 
@@ -111,20 +110,6 @@ class Plugin:
             logger.error(e, exc_info=True)
             return False
 
-    async def is_intel(self):
-        try:
-            return cpuManager.is_intel()
-        except Exception as e:
-            logger.error(e, exc_info=True)
-            return False
-
-    async def receive_suspendEvent(self):
-        try:
-            return True
-        except Exception as e:
-            logger.error(e, exc_info=True)
-            return False
-
     async def update_latest(self):
         logger.info("Updating latest")
         # return update.update_latest()
@@ -144,12 +129,6 @@ class Plugin:
             logger.error(e, exc_info=True)
             return ""
 
-    async def get_ryzenadj_info(self):
-        return cpuManager.get_ryzenadj_info()
-
-    async def get_rapl_info(self):
-        logger.info("Main get_rapl_info")
-        return cpuManager.get_rapl_info()
 
     async def log_info(self, message: str):
         try:

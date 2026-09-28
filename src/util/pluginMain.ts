@@ -4,18 +4,14 @@ import {
   ComponentName,
   FAN_PWM_MODE,
   FANMODE,
-  Patch,
   PluginState,
   UpdateType,
 } from "./enum";
 import { Backend } from "./backend";
-import { receiveSuspendEvent } from "./backend";
 import { localizationManager } from "../i18n";
 import { Settings } from "./settings";
 import { EACState, AppOverviewExt, BatteryStateChange } from "./steamClient";
 import { calPointInLine, FanPosition } from "./position";
-import { QAMPatch } from "./patch";
-import { addEventListener } from "@decky/api";
 import { Logger } from "./logger";
 import { Timeout } from "./timeout";
 
@@ -385,11 +381,6 @@ export class PluginManager {
 
       try {
         ACStateManager.register();
-        await Timeout.withTimeout(
-          () => QAMPatch.init(),
-          5000,
-          "QAM patch initialization timeout",
-        );
         Logger.info("System state initialization complete");
       } catch (e: any) {
         Logger.error(`System state initialization failed: ${e.message}`);
@@ -409,42 +400,6 @@ export class PluginManager {
         throw new Error(`Initial settings application failed: ${e.message}`);
       }
 
-      // 注册休眠恢复监听
-      // PluginManager.suspendEndHook =
-      //   SteamClient.System.RegisterForOnResumeFromSuspend(async () => {
-      //     try {
-      //       await new Promise((resolve) => setTimeout(resolve, 10000));
-      //       if (Settings.ensureEnable()) {
-      //         console.log("throwSuspendEvt");
-      //         await receiveSuspendEvent();
-      //       }
-      //       await Timeout.withTimeout(
-      //         () => Backend.applySettings(APPLYTYPE.SET_ALL),
-      //         3000,
-      //         "Settings application after suspend timeout"
-      //       );
-      //     } catch (e) {
-      //       Logger.error(`Error in suspend resume handler: ${e}`);
-      //     }
-      //   });
-      // Logger.info("Suspend resume handler registered");
-
-      // 监听后端事件
-      addEventListener("QAM_setTDP", (tdp: number) => {
-        try {
-          Logger.debug(`Received TDP value: ${tdp}`);
-          if (tdp == 500) {
-            Settings.setTDPEnable(false);
-          } else {
-            Settings.setTDPEnable(true);
-            Settings.setTDP(tdp);
-          }
-        } catch (e) {
-          Logger.error(`Error in QAM_setTDP event handler: ${e}`);
-        }
-      });
-      Logger.info("QAM_setTDP event handler registered");
-
       Logger.info("Plugin initialization complete");
       PluginManager.state = PluginState.RUN;
     } catch (e: any) {
@@ -460,10 +415,6 @@ export class PluginManager {
       throw e;
     }
   };
-
-  public static isPatchSuccess(patch: Patch) {
-    return QAMPatch.getPatchResult(patch);
-  }
 
   public static isIniting() {
     return PluginManager.state == PluginState.INIT;
@@ -486,7 +437,6 @@ export class PluginManager {
     try {
       PluginManager.updateAllComponent(UpdateType.DISMOUNT);
       ACStateManager?.unregister();
-      QAMPatch?.unpatch();
       RunningApps?.unregister();
       FanControl?.unregister();
     } catch (e) {

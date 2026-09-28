@@ -6,6 +6,7 @@
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
     "watch": "rollup -c -w",
+    "zip": "pnpm run build && python3 build_plugin_zip.py",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

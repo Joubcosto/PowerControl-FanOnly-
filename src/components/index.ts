@@ -1,11 +1,6 @@
-export * from "./SlowSliderField"
-export * from "./gpu"
-export * from "./cpu"
-export * from "./settings"
-export * from "./fan"
-export * from "./fanCanvas"
-export * from "./more"
-export * from "./customTDP"
-export * from "./power"
-export * from "./actionButtonItem"
-
+export * from "./SlowSliderField";
+export * from "./settings";
+export * from "./fan";
+export * from "./fanCanvas";
+export * from "./more";
+export * from "./actionButtonItem";

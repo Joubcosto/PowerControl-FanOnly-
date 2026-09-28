@@ -4,6 +4,7 @@ ifneq (,$(wildcard ./.env))
 endif
 
 SHELL=bash
+PNPM ?= $(shell which pnpm 2>/dev/null || echo "npx --yes pnpm")
 
 help: ## Display list of tasks with descriptions
 	@echo "+ $@"
@@ -11,7 +12,7 @@ help: ## Display list of tasks with descriptions
 
 vendor: ## Install project dependencies
 	@echo "+ $@"
-	@pnpm i
+	@$(PNPM) i
 
 env: ## Create default .env file
 	@echo "+ $@"
@@ -44,7 +45,7 @@ update-decky-ui: ## Update @decky/ui @decky/api
 
 build-front: ## Build frontend
 	@echo "+ $@"
-	@pnpm run build
+	@$(PNPM) run build
 
 build-back: ## Build backend
 	@echo "+ $@"
@@ -52,6 +53,11 @@ build-back: ## Build backend
 
 build: ## Build everything
 	@$(MAKE) build-front build-back
+
+zip: ## Build and package plugin into zip
+	@$(MAKE) build-front
+	@python3 build_plugin_zip.py
+
 
 copy-ssh-key: ## Copy public ssh key to steamdeck
 	@echo "+ $@"

@@ -22,35 +22,26 @@ import {
   SteamSpinner,
   Tabs,
 } from "@decky/ui";
-import { FC, useEffect, useMemo, useState } from "react";
-import { FaFan, FaLayerGroup, FaSuperpowers } from "react-icons/fa";
+import { FC, useEffect, useState } from "react";
+import { FaFan, FaLayerGroup } from "react-icons/fa";
 import {
-  Backend,
   ComponentName,
   PluginManager,
   Settings,
   UpdateType,
 } from "./util";
 import {
-  // GPUComponent,
-  // CPUComponent,
   SettingsComponent,
   FANComponent,
   MoreComponent,
   QuickAccessTitleView,
-  PowerComponent,
 } from "./components";
-import { TabCpu, TabGpu, TabPower, TabMore, TabFans } from "./tab";
-import { BsCpuFill } from "react-icons/bs";
-import { PiGraphicsCardFill, PiLightningFill } from "react-icons/pi";
+import { TabMore, TabFans } from "./tab";
 
 const ListView: FC<{}> = ({}) => {
   return (
     <>
       <SettingsComponent />
-      {/* <CPUComponent />
-      <GPUComponent />
-      <PowerComponent /> */}
       <FANComponent />
       <MoreComponent />
     </>
@@ -59,25 +50,13 @@ const ListView: FC<{}> = ({}) => {
 
 const TabView: FC<{ show?: boolean }> = ({ show = true }) => {
   const [currentTabRoute, setCurrentTabRoute] = useState<string>(
-    Settings.currentTabRoute
+    Settings.currentTabRoute || "fans"
   );
 
   const updateCurrentTabRoute = (route: string) => {
     setCurrentTabRoute(route);
     Settings.currentTabRoute = route;
   };
-
-  const supportChargeLimit = useMemo(() => {
-    return Backend.data.getSupportsChargeLimit();
-  }, []);
-
-  const isSupportSoftwareChargeLimit = useMemo(() => {
-    return Backend.data.getSupportsSoftwareChargeLimit();
-  }, []);
-
-  const showPowerTab = useMemo(() => {
-    return supportChargeLimit || isSupportSoftwareChargeLimit;
-  }, [supportChargeLimit, isSupportSoftwareChargeLimit]);
 
   return (
     <>
@@ -108,37 +87,11 @@ const TabView: FC<{ show?: boolean }> = ({ show = true }) => {
               updateCurrentTabRoute(tabID);
             }}
             tabs={[
-              // {
-              //   title: <BsCpuFill size={20} style={{ display: "block" }} />,
-              //   content: <TabCpu />,
-              //   id: "cpu",
-              // },
-              // {
-              //   title: (
-              //     <PiGraphicsCardFill size={21} style={{ display: "block" }} />
-              //   ),
-              //   content: <TabGpu />,
-              //   id: "gpu",
-              // },
               {
                 title: <FaFan size={20} style={{ display: "block" }} />,
                 content: <TabFans />,
                 id: "fans",
               },
-              // ...(showPowerTab
-              //   ? [
-              //       {
-              //         title: (
-              //           <PiLightningFill
-              //             size={20}
-              //             style={{ display: "block" }}
-              //           />
-              //         ),
-              //         content: <TabPower />,
-              //         id: "power",
-              //       },
-              //     ]
-              //   : []),
               {
                 title: <FaLayerGroup size={20} style={{ display: "block" }} />,
                 content: <TabMore />,
@@ -152,6 +105,7 @@ const TabView: FC<{ show?: boolean }> = ({ show = true }) => {
     </>
   );
 };
+
 const Content: FC<{}> = ({}) => {
   const [useOldUI, setUseOldUI] = useState<boolean>(Settings.useOldUI);
   const [show, setShow] = useState<boolean>(Settings.ensureEnable());
@@ -213,7 +167,7 @@ const Content: FC<{}> = ({}) => {
 
 export default definePlugin(() => {
   try {
-    console.log(">>>>>>>>>>>>>>>> Registering plugin PowerControl");
+    console.log(">>>>>>>>>>>>>>>> Registering plugin PowerControl (Fan Only)");
     PluginManager.register();
   } catch (e) {
     console.log("Error while registering plugin", e);
@@ -223,7 +177,7 @@ export default definePlugin(() => {
     title: <div className={staticClasses.Title}>PowerControl</div>,
     titleView: <QuickAccessTitleView title={"PowerControl"} />,
     content: <Content />,
-    icon: <FaSuperpowers />,
+    icon: <FaFan />,
     onDismount() {
       PluginManager?.unregister();
     },
