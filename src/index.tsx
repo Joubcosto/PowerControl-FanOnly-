@@ -167,15 +167,15 @@ const Content: FC<{}> = ({}) => {
 
 export default definePlugin(() => {
   try {
-    console.log(">>>>>>>>>>>>>>>> Registering plugin PowerControl (Fan Only)");
+    console.log(">>>>>>>>>>>>>>>> Registering plugin FanControlFork");
     PluginManager.register();
   } catch (e) {
     console.log("Error while registering plugin", e);
   }
 
   return {
-    title: <div className={staticClasses.Title}>PowerControl</div>,
-    titleView: <QuickAccessTitleView title={"PowerControl"} />,
+    title: <div className={staticClasses.Title}>FanControlFork</div>,
+    titleView: <QuickAccessTitleView title={"FanControlFork"} />,
     content: <Content />,
     icon: <FaFan />,
     onDismount() {

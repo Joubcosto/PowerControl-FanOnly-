@@ -1,11 +1,11 @@
 {
-  "name": "PowerControl",
+  "name": "FanControlFork",
   "author": "yxx",
   "flags": ["root"],
   "api_version": 1,
   "publish": {
     "tags": ["root"],
-    "description": "PowerControl plugin.",
+    "description": "FanControlFork plugin.",
     "image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
   }
 }

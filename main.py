@@ -38,7 +38,7 @@ class Plugin:
         decky.logger.info("start _unload")
         # 使用单例模式获取实例并卸载
         # FuseManager.get_instance().unload()
-        logger.info("End PowerControl")
+        logger.info("End FanControlFork")
 
     async def get_settings(self):
         return self.confManager.getSettings()

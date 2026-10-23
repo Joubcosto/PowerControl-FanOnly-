@@ -7,17 +7,19 @@ if [ "$EUID" -eq 0 ]; then
   exit
 fi
 
-sudo rm -rf $HOME/homebrew/plugins/PowerControl
+# Remove the previous installation name before installing the renamed plugin.
+sudo rm -rf "$HOME/homebrew/plugins/PowerControl"
+sudo rm -rf "$HOME/homebrew/plugins/FanControlFork"
 
 VERSION=${VERSION_TAG:-"LATEST"}
 
-github_api_url='https://api.github.com/repos/aarron-lee/PowerControl/releases/latest'
+github_api_url='https://api.github.com/repos/Joubcosto/PowerControl-FanOnly-/releases/latest'
 
 if [ $VERSION != "LATEST" ] ; then
-  github_api_url="https://api.github.com/repos/aarron-lee/PowerControl/releases/${VERSION}"
+  github_api_url="https://api.github.com/repos/Joubcosto/PowerControl-FanOnly-/releases/${VERSION}"
 fi
 
-package="PowerControl"
+package="FanControlFork"
 
 echo "installing $package"
 

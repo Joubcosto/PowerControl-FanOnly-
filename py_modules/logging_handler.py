@@ -2,7 +2,7 @@ import logging
 import os
 import subprocess
 
-LOG = "/tmp/PowerControl_systemd.log"
+LOG = "/tmp/FanControlFork_systemd.log"
 LOG_TAG = "powercontrol"
 
 

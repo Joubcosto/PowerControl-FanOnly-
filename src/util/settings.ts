@@ -17,7 +17,7 @@ import { EACState } from "./steamClient";
 export const DEFAULT_TDP_MAX = 25;
 export const DEFAULT_TDP_MIN = 3;
 
-const SETTINGS_KEY = "PowerControl";
+const SETTINGS_KEY = "FanControlFork";
 const serializer = new JsonSerializer();
 
 @JsonObject()

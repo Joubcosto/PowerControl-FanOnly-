@@ -45,7 +45,7 @@ export class SteamUtils {
     duration,
   }: NotifyProps) {
     let toastData = {
-      title: title || "PowerControl",
+      title: title || "FanControlFork",
       body: message,
       logo: logo,
       icon: icon || <FaSuperpowers />,

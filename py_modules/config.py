@@ -7,7 +7,7 @@ import yaml
 from logging_handler import SystemdHandler
 
 # 日志配置
-LOG_LOCATION = "/tmp/PowerControl_py.log"
+LOG_LOCATION = "/tmp/FanControlFork_py.log"
 LOG_LEVEL = logging.DEBUG
 
 
@@ -59,7 +59,7 @@ EC_SCHEMA = f"{FAN_CONFIG_DIR}/schema/ec.json"
 
 API_URL = "https://api.github.com/repos/aarron-lee/PowerControl/releases/latest"
 
-CONFIG_KEY = "PowerControl"
+CONFIG_KEY = "FanControlFork"
 
 
 # 设备信息获取配置

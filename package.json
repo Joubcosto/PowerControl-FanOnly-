@@ -1,7 +1,7 @@
 {
-  "name": "power_control",
+  "name": "fan_control_fork",
   "version": "v3.3.0-beta-client-fix",
-  "description": "PowerControl plugin.",
+  "description": "FanControlFork plugin.",
   "type": "module",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",

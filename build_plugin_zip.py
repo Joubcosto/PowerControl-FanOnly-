@@ -2,7 +2,7 @@
 import os
 import zipfile
 
-plugin_name = "PowerControl"
+plugin_name = "FanControlFork"
 zip_filename = f"{plugin_name}.zip"
 
 items_to_copy = [

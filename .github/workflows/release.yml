@@ -62,24 +62,24 @@ jobs:
           pnpm update
           pnpm run build
           rm -f dist/*.js.map
-          tar -czvf PowerControl.tar.gz --transform 's,^,PowerControl/,' dist backend py_modules bin *.py *.json *.md *.js LICENSE
+          tar -czvf FanControlFork.tar.gz --transform 's,^,FanControlFork/,' dist backend py_modules bin *.py *.json *.md *.js LICENSE
           # zip
-          mkdir -p PowerControl
-          cp -r dist backend py_modules bin *.py *.json *.md *.js LICENSE PowerControl
-          zip -r PowerControl.zip PowerControl
-          rm -rf PowerControl
+          mkdir -p FanControlFork
+          cp -r dist backend py_modules bin *.py *.json *.md *.js LICENSE FanControlFork
+          zip -r FanControlFork.zip FanControlFork
+          rm -rf FanControlFork
 
       - name: show files
         run: |
-          tar -tzvf PowerControl.tar.gz
-          unzip -l PowerControl.zip
+          tar -tzvf FanControlFork.tar.gz
+          unzip -l FanControlFork.zip
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: PowerControl
+          name: FanControlFork
           path: |
-            PowerControl.tar.gz
-            PowerControl.zip
+            FanControlFork.tar.gz
+            FanControlFork.zip
 
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -99,8 +99,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            /tmp/artifacts/PowerControl/PowerControl.tar.gz
-            /tmp/artifacts/PowerControl/PowerControl.zip
+            /tmp/artifacts/FanControlFork/FanControlFork.tar.gz
+            /tmp/artifacts/FanControlFork/FanControlFork.zip
           tag_name: ${{ github.ref_name }}
           draft: false
           generate_release_notes: true
