@@ -19,37 +19,10 @@ jobs:
     steps:
       - name: set git global safe directory
         run: |
-          pacman -Syu git npm tree zip unzip upx --noconfirm
+          pacman -Syu git npm tree zip unzip --noconfirm
           git config --global --add safe.directory $(realpath .)
 
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      # - name: update submodules
-      #   run: git submodule update --init --recursive
-
-      - name: build RyzenAdj
-        run: |
-          pacman -S base-devel pciutils cmake --noconfirm --needed --overwrite='*'
-          cd submodule/RyzenAdj
-          mkdir build && cd build
-          cmake -DCMAKE_BUILD_TYPE=Release ..
-          make
-          upx -9 ryzenadj
-          cp -f ryzenadj ../../../bin
-
-      # - name: build python-fuse
-      #   run: |
-      #     PWD=$(pwd)
-      #     echo "PWD: $PWD"
-      #     mkdir -p py_modules/site-packages
-      #     pacman -S python-fuse python-setuptools python-wheel python-installer rsync --noconfirm --needed --overwrite='*'
-      #     cd ${PWD}/submodule/python-fuse && \
-      #       PYTHONPATH=${PWD}/py_modules/site-packages \
-      #       python3 setup.py install --prefix=${PWD} --install-lib=install
-      #     cd -
-      #     rsync -av --progress --exclude=*.pyc --exclude=__pycache__ ./submodule/python-fuse/install/fuse*/fuse* ./py_modules/site-packages/
 
       - name: change log level
         run: |
@@ -62,10 +35,10 @@ jobs:
           pnpm update
           pnpm run build
           rm -f dist/*.js.map
-          tar -czvf FanControlFork.tar.gz --transform 's,^,FanControlFork/,' dist backend py_modules bin *.py *.json *.md *.js LICENSE
+          tar -czvf FanControlFork.tar.gz --transform 's,^,FanControlFork/,' dist py_modules main.py plugin.json package.json README.md LICENSE
           # zip
           mkdir -p FanControlFork
-          cp -r dist backend py_modules bin *.py *.json *.md *.js LICENSE FanControlFork
+          cp -r dist py_modules main.py plugin.json package.json README.md LICENSE FanControlFork
           zip -r FanControlFork.zip FanControlFork
           rm -rf FanControlFork
 

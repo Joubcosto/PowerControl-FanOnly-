@@ -18,7 +18,7 @@ interface VersionCache {
   cacheExpiry: number;
 }
 
-const CACHE_KEY = 'powercontrol_version_cache';
+const CACHE_KEY = 'fancontrolfork_version_cache';
 const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6小时
 
 const getVersionCache = (): VersionCache | null => {

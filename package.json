@@ -1,6 +1,6 @@
 {
   "name": "fan_control_fork",
-  "version": "v3.3.0-beta-client-fix",
+  "version": "1.0.1",
   "description": "FanControlFork plugin.",
   "type": "module",
   "scripts": {

@@ -17,5 +17,5 @@ fans:
     ram_rpmread_offset: 0x1809
     ram_rpmread_length: 0
 
-    rpm_write_max: 255
+    rpm_write_max: 100
     rpm_value_max: 5530

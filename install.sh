@@ -40,7 +40,7 @@ if [[ $use_jq == true ]]; then
   echo "Using jq"
   MESSAGE=$(echo "$RELEASE" | jq -r '.message')
   RELEASE_VERSION=$(echo "$RELEASE" | jq -r '.tag_name')
-  RELEASE_URL=$(echo "$RELEASE" | jq -r '.assets[0].browser_download_url')
+  RELEASE_URL=$(echo "$RELEASE" | jq -r '[.assets[].browser_download_url | select(endswith(".tar.gz"))][0]')
 else
   MESSAGE=$(echo $RELEASE | grep "message" | cut -d '"' -f 4)
   RELEASE_URL=$(echo $RELEASE | grep "browser_download_url" | cut -d '"' -f 4 | grep ".tar.gz")
